@@ -5,6 +5,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -41,7 +42,7 @@ var (
 
 func init() {
 	flag.StringVar(&c, "config", "config.json", "config")
-	flag.BoolVar(&d, "debug", false, "debug")
+	flag.BoolVar(&d, "debug", os.Getenv("DEBUG") != "", "debug")
 	flag.Parse()
 
 	bs, err := ioutil.ReadFile(c)
