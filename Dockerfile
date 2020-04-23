@@ -4,13 +4,16 @@ WORKDIR /build
 
 COPY . .
 
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GO111MODULE=on go build -o cronjob .
+RUN CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://goproxy.io,direct go build -o exe . \
+    && sed -i 's|http://dl-cdn.alpinelinux.org|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apk/repositories \
+    && apk add --no-cache upx \
+    && upx -9 -q exe
 
 FROM starudream/alpine-glibc:latest
 
 WORKDIR /
 
 COPY config.json config.json
-COPY --from=builder /build/cronjob cronjob
+COPY --from=builder /build/exe exe
 
-CMD /cronjob
+CMD /exe
