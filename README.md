@@ -31,7 +31,7 @@ docker run -d \
     --name cronjob \
     --restart always \
     -e DEBUG=true \
-    -v config.json:/config.json
+    -v `pwd`/config.json:/config.json \
     starudream/cronjob:latest
 ```
 
