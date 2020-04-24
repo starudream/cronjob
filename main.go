@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/hex"
 	"flag"
 	"io/ioutil"
 	"net/http"
@@ -44,6 +45,10 @@ func init() {
 	flag.StringVar(&c, "config", "config.json", "config")
 	flag.BoolVar(&d, "debug", os.Getenv("DEBUG") != "", "debug")
 	flag.Parse()
+
+	if !d {
+		logx.SetLevel(logx.InfoLevel)
+	}
 
 	bs, err := ioutil.ReadFile(c)
 	if err != nil {
@@ -111,6 +116,8 @@ func handle(i int) {
 func do(i int) {
 	task := config.Tasks[i]
 
+	logx.Infof("[%s:%d] begin", task.Name, i)
+
 	req, err := http.NewRequest(task.Method, task.Url, bytes.NewReader([]byte(task.Body)))
 	if err != nil {
 		exit("[%s:%d] build request fail", err, task.Name, i)
@@ -130,32 +137,40 @@ func do(i int) {
 	}
 	defer resp.Body.Close()
 
-	bs, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return
+	took := time.Since(now).Milliseconds()
+	logx.Debugf("[%s:%d] took %dms\n%s", task.Name, i, took, dump(task, req, resp))
+	logx.Infof("[%s:%d] end, took %dms, status %s", task.Name, i, took, resp.Status)
+}
+
+func dump(task Task, req *http.Request, resp *http.Response) string {
+	bs, _ := ioutil.ReadAll(resp.Body)
+
+	sb := strings.Builder{}
+	sb.WriteString(req.Method + " " + req.URL.String() + " " + req.Proto + "\n")
+	for k, v := range req.Header {
+		sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
+	}
+	sb.WriteString("Host: " + req.Host)
+	if task.Body == "" {
+		task.Body = "<empty>"
+	}
+	sb.WriteString("\n" + task.Body + "\n")
+
+	sb.WriteString("\n" + resp.Proto + " " + resp.Status + "\n")
+	for k, v := range resp.Header {
+		sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
+	}
+	if strings.Contains(resp.Header.Get("Content-Type"), "gbk") {
+		bs, _ = ioutil.ReadAll(simplifiedchinese.GB18030.NewDecoder().Reader(bytes.NewReader(bs)))
+	}
+	if len(bs) > 0 {
+		sb.WriteString("\n")
+		if len(bs) > 1024 {
+			sb.WriteString(hex.EncodeToString(bs))
+		} else {
+			sb.WriteString(string(bs))
+		}
 	}
 
-	if d {
-		sb := strings.Builder{}
-		sb.WriteString(req.Method + " " + req.RequestURI + " " + req.Proto + "\n")
-		for k, v := range req.Header {
-			sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
-		}
-		if task.Body != "" {
-			sb.WriteString("\n" + task.Body + "\n")
-		}
-		sb.WriteString("\n" + resp.Proto + " " + resp.Status + "\n")
-		for k, v := range resp.Header {
-			sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
-		}
-		if strings.Contains(resp.Header.Get("Content-Type"), "gbk") {
-			bs, _ = ioutil.ReadAll(simplifiedchinese.GB18030.NewDecoder().Reader(bytes.NewReader(bs)))
-		}
-		if len(bs) > 0 {
-			sb.WriteString("\n" + string(bs))
-		}
-		logx.Debugf("[%s:%d] took %dms\n%s", task.Name, i, time.Since(now).Milliseconds(), sb.String())
-	}
-
-	logx.Infof("[%s:%d] success", task.Name, i)
+	return sb.String()
 }
