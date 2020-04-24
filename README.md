@@ -2,7 +2,7 @@
 
 ![Go](https://github.com/starudream/cronjob/workflows/Go/badge.svg)
 ![Docker](https://github.com/starudream/cronjob/workflows/Docker/badge.svg)
-![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue)
+![License](https://img.shields.io/badge/License-Apache%20License%202.0-blue)
 
 ## Config
 
