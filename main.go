@@ -13,7 +13,6 @@ import (
 	"github.com/go-sdk/logx"
 	"github.com/go-sdk/utilx/json"
 	"github.com/robfig/cron/v3"
-	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 type Config struct {
@@ -146,30 +145,27 @@ func dump(task Task, req *http.Request, resp *http.Response) string {
 	bs, _ := ioutil.ReadAll(resp.Body)
 
 	sb := strings.Builder{}
+
+	// Request
 	sb.WriteString(req.Method + " " + req.URL.String() + " " + req.Proto + "\n")
+	sb.WriteString("Host: " + req.Host + "\n")
 	for k, v := range req.Header {
 		sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
 	}
-	sb.WriteString("Host: " + req.Host)
 	if task.Body == "" {
 		task.Body = "<empty>"
 	}
 	sb.WriteString("\n" + task.Body + "\n")
 
-	sb.WriteString("\n" + resp.Proto + " " + resp.Status + "\n")
+	sb.WriteString("--------------------------------------------------------------------------------\n")
+
+	// Response
+	sb.WriteString(resp.Proto + " " + resp.Status + "\n")
 	for k, v := range resp.Header {
 		sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
 	}
-	if strings.Contains(resp.Header.Get("Content-Type"), "gbk") {
-		bs, _ = ioutil.ReadAll(simplifiedchinese.GB18030.NewDecoder().Reader(bytes.NewReader(bs)))
-	}
 	if len(bs) > 0 {
-		sb.WriteString("\n")
-		if len(bs) > 1024 {
-			sb.WriteString(hex.EncodeToString(bs))
-		} else {
-			sb.WriteString(string(bs))
-		}
+		sb.WriteString("\n" + hex.EncodeToString(bs))
 	}
 
 	return sb.String()
