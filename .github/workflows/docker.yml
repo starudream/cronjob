@@ -1,6 +1,10 @@
 name: Docker
 on:
-  - push
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 2 * * *'
 jobs:
   build:
     name: Build
@@ -12,4 +16,6 @@ jobs:
           fetch-depth: 1
       - name: Build
         run: |
-          docker build .
+          echo "${{secrets.DOCKER_TOKEN}}" | docker login -u starudream --password-stdin
+          docker build -t starudream/cronjob:latest .
+          docker push starudream/cronjob:latest
