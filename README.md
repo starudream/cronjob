@@ -25,7 +25,6 @@
 
 ## Usage
 
-![Build](https://img.shields.io/docker/cloud/build/starudream/cronjob)
 ![Version](https://img.shields.io/docker/v/starudream/cronjob)
 ![Size](https://img.shields.io/docker/image-size/starudream/cronjob/latest)
 ![Pull](https://img.shields.io/docker/pulls/starudream/cronjob)
