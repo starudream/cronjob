@@ -42,7 +42,7 @@ var (
 
 func init() {
 	flag.StringVar(&c, "config", "config.json", "config")
-	flag.BoolVar(&d, "debug", os.Getenv("DEBUG") != "", "debug")
+	flag.BoolVar(&d, "debug", strings.ToLower(os.Getenv("DEBUG")) == "true", "debug")
 	flag.Parse()
 
 	if !d {
