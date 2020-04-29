@@ -4,19 +4,19 @@ WORKDIR /build
 
 COPY . .
 
-RUN CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://mirrors.aliyun.com/goproxy go build -o exe .
+RUN CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://mirrors.aliyun.com/goproxy go build -o cronjob .
 
 FROM starudream/alpine:latest AS builder2
 
-COPY --from=builder1 /build/exe /exe
+COPY --from=builder1 /build/cronjob /cronjob
 
-RUN apk add --no-cache upx && upx -9 -q /exe
+RUN apk add --no-cache upx && upx -9 -q /cronjob
 
 FROM starudream/alpine-glibc:latest
 
 WORKDIR /
 
 COPY config.json config.json
-COPY --from=builder2 /exe /exe
+COPY --from=builder2 /cronjob /cronjob
 
-CMD /exe
+CMD /cronjob
