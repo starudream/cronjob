@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 NAME=$1
 
 echo -e "\033[34m[ Start '${NAME}' ]\033[0m"
@@ -24,5 +26,3 @@ docker tag "${USERNAME}"/"${NAME}":latest registry.cn-shanghai.aliyuncs.com/"${U
 docker push registry.cn-shanghai.aliyuncs.com/"${USERNAME}"/"${NAME}":latest
 
 echo -e "\033[34m[ End '${NAME}' ]\033[0m"
-
-cd "../"
