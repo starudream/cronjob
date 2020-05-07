@@ -2,8 +2,6 @@
 
 NAME=$1
 
-cd "./${NAME}" || exit 1
-
 echo -e "\033[34m[ Start '${NAME}' ]\033[0m"
 
 docker build -q -t "${USERNAME}"/"${NAME}":latest .
