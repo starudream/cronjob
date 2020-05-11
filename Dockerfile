@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://mirrors.aliyun.com/goproxy go build -o cronjob .
+RUN CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://goproxy.cn,direct go build -o cronjob .
 
 FROM starudream/alpine:latest AS builder2
 

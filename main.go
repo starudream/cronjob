@@ -33,9 +33,6 @@ type Task struct {
 var (
 	config = Config{}
 
-	reCh    = make(chan int, 1)
-	closeCh = make(chan struct{}, 1)
-
 	c string
 	d bool
 )
@@ -85,14 +82,7 @@ func main() {
 	for i := range config.Tasks {
 		go handle(i)
 	}
-	for {
-		select {
-		case i := <-reCh:
-			go handle(i)
-		case <-closeCh:
-			return
-		}
-	}
+	select {}
 }
 
 func handle(i int) {
