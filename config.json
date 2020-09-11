@@ -1,14 +1,14 @@
 {
-  "tasks": [
-    {
-      "name": "test",
-      "url": "https://api.github.com/",
-      "body": "",
-      "cron": "* * * * *",
-      "timezone": "Asia/Shanghai",
-      "method": "GET",
-      "headers": {},
-      "timeout": 30
-    }
-  ]
+    "tasks": [
+        {
+            "name": "test",
+            "url": "https://api.github.com/",
+            "body": "",
+            "cron": "* * * * *",
+            "timezone": "Asia/Shanghai",
+            "method": "GET",
+            "headers": {},
+            "timeout": 30
+        }
+    ]
 }

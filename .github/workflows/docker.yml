@@ -1,16 +1,10 @@
 name: Docker
 on:
-  push:
-    branches:
-      - master
-  schedule:
-    - cron: '0 2 * * *'
+  - push
 env:
   USERNAME: starudream
-  DOCKER_TOKEN: ${{secrets.DOCKER_TOKEN}}
-  PACKAGE_TOKEN: ${{secrets.PACKAGE_TOKEN}}
-  ALIYUN_DOCKER_USERNAME: ${{secrets.ALIYUN_DOCKER_USERNAME}}
-  ALIYUN_DOCKER_TOKEN: ${{secrets.ALIYUN_DOCKER_TOKEN}}
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+  PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
 jobs:
   build:
     name: Build
@@ -18,7 +12,5 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
       - name: Build
-        run: chmod +x build.sh && ./build.sh cronjob
+        run: bash build.sh cronjob
