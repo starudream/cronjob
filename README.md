@@ -1,8 +1,8 @@
 # CronJob
 
-![Go](https://github.com/starudream/cronjob/workflows/Go/badge.svg)
-![Docker](https://github.com/starudream/cronjob/workflows/Docker/badge.svg)
-![License](https://img.shields.io/badge/License-Apache%20License%202.0-blue)
+![Go](https://img.shields.io/github/workflow/status/starudream/cronjob/Go/master?style=for-the-badge)
+![Docker](https://img.shields.io/github/workflow/status/starudream/cronjob/Docker/master?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache%20License%202.0-blue?style=for-the-badge)
 
 ## Config
 
@@ -25,9 +25,9 @@
 
 ## Usage
 
-![Version](https://img.shields.io/docker/v/starudream/cronjob)
-![Size](https://img.shields.io/docker/image-size/starudream/cronjob/latest)
-![Pull](https://img.shields.io/docker/pulls/starudream/cronjob)
+![Version](https://img.shields.io/docker/v/starudream/cronjob?style=for-the-badge)
+![Size](https://img.shields.io/docker/image-size/starudream/cronjob/latest?style=for-the-badge)
+![Pull](https://img.shields.io/docker/pulls/starudream/cronjob?style=for-the-badge)
 
 ```bash
 docker pull starudream/cronjob
