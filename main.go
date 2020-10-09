@@ -17,6 +17,9 @@ import (
 
 type Config struct {
 	Tasks []Task `json:"tasks"`
+
+	Path string `json:"-"`
+	Help bool   `json:"-"`
 }
 
 type Task struct {
@@ -31,33 +34,31 @@ type Task struct {
 }
 
 var (
-	config = Config{}
-
-	c string
-	d bool
+	config = &Config{}
 )
 
 func init() {
-	flag.StringVar(&c, "config", "config.json", "config")
-	flag.BoolVar(&d, "debug", strings.ToLower(os.Getenv("DEBUG")) == "true", "debug")
+	flag.StringVar(&config.Path, "config", "config.json", "config")
+	flag.BoolVar(&config.Help, "help", false, "instructions for use")
 	flag.Parse()
 
-	if !d {
-		logx.SetLevel(logx.InfoLevel)
+	if config.Help {
+		flag.Usage()
+		os.Exit(0)
 	}
 
-	bs, err := ioutil.ReadFile(c)
+	bs, err := ioutil.ReadFile(config.Path)
 	if err != nil {
-		exit("[init] read file fail", err)
+		logx.WithField("err", err).Fatal("[init] read file fail")
 	}
 
 	err = json.Unmarshal(bs, &config)
 	if err != nil {
-		exit("[init] decode file fail", err)
+		logx.WithField("err", err).Fatal("[init] decode file fail")
 	}
 
 	if len(config.Tasks) == 0 {
-		exit("[init] task empty", nil)
+		logx.Fatal("[init] task empty")
 	}
 
 	for i, task := range config.Tasks {
@@ -90,11 +91,11 @@ func handle(i int) {
 
 	l, err := time.LoadLocation(task.Timezone)
 	if err != nil {
-		exit("[%s:%d] timezone parse fail", err, task.Name, i)
+		logx.WithField("err", err).Fatalf("[%s:%d] timezone parse fail", task.Name, i)
 	}
 	s, err := cron.ParseStandard(task.Cron)
 	if err != nil {
-		exit("[%s:%d] cron parse fail", err, task.Name, i)
+		logx.WithField("err", err).Fatalf("[%s:%d] cron parse fail", task.Name, i)
 	}
 
 	c := cron.New(cron.WithLocation(l), cron.WithLogger(cron.VerbosePrintfLogger(&Log{i: i, name: task.Name})))
@@ -109,7 +110,7 @@ func do(i int) {
 
 	req, err := http.NewRequest(task.Method, task.Url, bytes.NewReader([]byte(task.Body)))
 	if err != nil {
-		exit("[%s:%d] build request fail", err, task.Name, i)
+		logx.WithField("err", err).Errorf("[%s:%d] build request fail", task.Name, i)
 		return
 	}
 
@@ -121,7 +122,7 @@ func do(i int) {
 
 	resp, err := (&http.Client{Timeout: time.Duration(task.Timeout) * time.Second}).Do(req)
 	if err != nil {
-		exit("[%s:%d] send request fail", err, task.Name, i)
+		logx.WithField("err", err).Errorf("[%s:%d] send request fail", task.Name, i)
 		return
 	}
 	defer resp.Body.Close()
