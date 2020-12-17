@@ -8,18 +8,20 @@
 
 ```json
 {
-  "tasks": [
-    {
-      "name": "test",
-      "url": "https://api.github.com/",
-      "body": "",
-      "cron": "* * * * *",
-      "timezone": "Asia/Shanghai",
-      "method": "GET",
-      "headers": {},
-      "timeout": 30
-    }
-  ]
+    "tasks": [
+        {
+            "name": "test",
+            "url": "https://api.github.com/",
+            "body": "",
+            "cron": "* * * * *",
+            "timezone": "Asia/Shanghai",
+            "method": "GET",
+            "headers": {},
+            "timeout": 30,
+            "http_proxy": "http://127.0.0.1:7890",
+            "https_proxy": "http://127.0.0.1:7890"
+        }
+    ]
 }
 ```
 
@@ -37,7 +39,6 @@ docker pull starudream/cronjob
 docker run -d \
     --name cronjob \
     --restart always \
-    -e DEBUG=true \
     -v /opt/docker/cronjob/config.json:/config.json \
     starudream/cronjob:latest
 ```
