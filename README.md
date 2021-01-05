@@ -10,7 +10,7 @@
 {
     "tasks": [
         {
-            "name": "test",
+            "name": "GitHub",
             "url": "https://api.github.com/",
             "body": "",
             "cron": "* * * * *",
@@ -18,6 +18,8 @@
             "method": "GET",
             "headers": {},
             "timeout": 30,
+            "no_body": false,
+            "decryption": "",
             "http_proxy": "http://127.0.0.1:7890",
             "https_proxy": "http://127.0.0.1:7890"
         }

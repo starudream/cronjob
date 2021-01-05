@@ -2,12 +2,12 @@ package main
 
 import (
 	"bytes"
-	"encoding/hex"
 	"flag"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,6 +32,8 @@ type Task struct {
 	Method     string            `json:"method"`
 	Headers    map[string]string `json:"headers"`
 	Timeout    int64             `json:"timeout"`
+	NoBody     bool              `json:"no_body"`
+	Decryption string            `json:"decryption"`
 	HTTPProxy  string            `json:"http_proxy"`
 	HTTPSProxy string            `json:"https_proxy"`
 }
@@ -178,8 +180,22 @@ func dump(task Task, req *http.Request, resp *http.Response) string {
 	for k, v := range resp.Header {
 		sb.WriteString(k + ": " + strings.Join(v, " ") + "\n")
 	}
-	if len(bs) > 0 {
-		sb.WriteString("\n" + hex.EncodeToString(bs))
+	if len(bs) > 0 && !task.NoBody {
+		var (
+			str string
+			err error
+		)
+		sb.WriteString("\n")
+		switch strings.ToLower(task.Decryption) {
+		case "unicode":
+			str, err = strconv.Unquote(strings.Replace(strconv.Quote(string(bs)), `\\u`, `\u`, -1))
+		default:
+		}
+		if err == nil {
+			sb.WriteString(str)
+		} else {
+			sb.WriteString(string(bs))
+		}
 	}
 
 	return sb.String()
