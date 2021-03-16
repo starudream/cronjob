@@ -1,6 +1,6 @@
 module github.com/starudream/cronjob
 
-go 1.15
+go 1.16
 
 require (
 	github.com/go-sdk/logx v1.1.6
