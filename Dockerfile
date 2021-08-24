@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-COPY --from=tonistiigi/xx:golang / /
+COPY --from=tonistiigi/xx:golang-master / /
 
 RUN export && CGO_ENABLED=0 GO111MODULE=on go build -o cronjob . && upx cronjob
 
