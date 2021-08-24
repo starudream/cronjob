@@ -1,4 +1,4 @@
-FROM starudream/golang AS builder
+FROM golang:alpine AS builder
 
 WORKDIR /build
 
@@ -6,7 +6,7 @@ COPY . .
 
 COPY --from=tonistiigi/xx:golang-master / /
 
-RUN export && CGO_ENABLED=0 GO111MODULE=on go build -o cronjob . && upx cronjob
+RUN CGO_ENABLED=0 GO111MODULE=on go build -o cronjob .
 
 FROM starudream/alpine-glibc:latest
 
