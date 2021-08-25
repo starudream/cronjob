@@ -20,4 +20,4 @@ jobs:
       - name: Build
         run: |
           export GOPATH=~/.cache
-          CGO_ENABLED=0 GO111MODULE=on go build -o ./build/cronjob .
+          CGO_ENABLED=0 GO111MODULE=on go build -o ./build/app .

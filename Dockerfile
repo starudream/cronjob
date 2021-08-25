@@ -4,11 +4,12 @@ WORKDIR /build
 
 COPY . .
 
-RUN CGO_ENABLED=0 GO111MODULE=on go build -o cronjob . && upx cronjob
+RUN CGO_ENABLED=0 GO111MODULE=on go build -o cronjob . ; upx -V && upx /build/cronjob || exit 0
 
 FROM starudream/alpine-glibc:latest
 
 COPY config.json config.json
+
 COPY --from=builder /build/cronjob /cronjob
 
 WORKDIR /
