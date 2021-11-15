@@ -4,7 +4,7 @@
             "name": "GitHub",
             "url": "https://api.github.com/",
             "body": "",
-            "cron": "* * * * *",
+            "cron": "*/5 * * * * *",
             "timezone": "Asia/Shanghai",
             "method": "GET",
             "headers": {},

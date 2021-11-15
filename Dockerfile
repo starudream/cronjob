@@ -4,14 +4,16 @@ WORKDIR /build
 
 COPY . .
 
-RUN CGO_ENABLED=0 GO111MODULE=on go build -o cronjob . ; upx -V && upx /build/cronjob || exit 0
+RUN apk add --no-cache make git \
+    && make build \
+    && make upx
 
 FROM starudream/alpine-glibc:latest
 
-COPY config.json config.json
-
-COPY --from=builder /build/cronjob /cronjob
-
 WORKDIR /
 
-CMD /cronjob
+COPY config.json config.json
+
+COPY --from=builder /build/bin/app /app
+
+CMD /app

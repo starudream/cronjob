@@ -1,6 +1,6 @@
 # CronJob
 
-![Go](https://img.shields.io/github/workflow/status/starudream/cronjob/Go/master?style=for-the-badge)
+![Golang](https://img.shields.io/github/workflow/status/starudream/cronjob/Golang/master?style=for-the-badge)
 ![Docker](https://img.shields.io/github/workflow/status/starudream/cronjob/Docker/master?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Apache%20License%202.0-blue?style=for-the-badge)
 
@@ -13,7 +13,7 @@
             "name": "GitHub",
             "url": "https://api.github.com/",
             "body": "",
-            "cron": "* * * * *",
+            "cron": "*/5 * * * * *",
             "timezone": "Asia/Shanghai",
             "method": "GET",
             "headers": {},
